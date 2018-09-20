@@ -48,9 +48,7 @@ java -cp test-classes;lib/takari-cpsuite-1.2.7.jar;lib/hamcrest-core-1.3.jar;lib
 
 # III. Building and running without pre-installed JDK   
 Distribution of Java 8 must be located on PC
-
-I wad unable to add distribution to the project since github rejects any files > 100 mb 
-
+Note: I was unable to add JDK distribution to the project since github rejects any files > 100 mb 
 
 Execute batch scripts 
 ### Command to build 
