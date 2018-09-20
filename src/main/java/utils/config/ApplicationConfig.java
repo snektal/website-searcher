@@ -73,8 +73,4 @@ public class ApplicationConfig {
             return defaultVal;
         }
     }
-
-    public static Properties getProperties() {
-        return properties;
-    }
 }

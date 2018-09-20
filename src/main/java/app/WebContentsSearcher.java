@@ -15,6 +15,8 @@ import java.util.logging.Level;
 
 public class WebContentsSearcher {
 
+    private static final String DEFAULT_URL = "https://s3.amazonaws.com/fieldlens-public/urls.txt";
+
     public static void main(String[] args) {
 
         String timestamp = DateUtil.getFileTimestamp();
@@ -30,12 +32,11 @@ public class WebContentsSearcher {
         ReportWriter.generateReport(timestamp, pageContentSearcherCallback);
 
         ApplicationLogger.log(Level.INFO, "app.WebContentsSearcher is Completed");
-        System.exit(0);
     }
 
     private static List<String> getWebsiteUrls() {
-        String defaultUrl = "https://s3.amazonaws.com/fieldlens-public/urls.txt";
-        String urls = ApplicationConfig.getStringProperty("web.link.to.urls", defaultUrl);
+
+        String urls = ApplicationConfig.getStringProperty("web.link.to.urls", DEFAULT_URL);
         ApplicationLogger.log(Level.INFO, "Loading Urls from {0}", urls);
 
         UrlReader urlReader = new UrlReader();

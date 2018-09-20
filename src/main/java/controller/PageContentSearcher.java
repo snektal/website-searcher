@@ -39,8 +39,8 @@ public class PageContentSearcher implements Callback {
         return results;
     }
 
-    private void parseForSearchTerms(String url, String pageContext) {
-        String pageContextToLower = pageContext.toLowerCase();
+    private void parseForSearchTerms(String url, String pageContents) {
+        String pageContextToLower = pageContents.toLowerCase();
         long matchCount = searchTerms.stream()
                 .map(String::toLowerCase)
                 .filter(pageContextToLower::contains)

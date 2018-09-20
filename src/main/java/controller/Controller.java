@@ -1,7 +1,6 @@
 package controller;
 
 import concurrent.ThreadPool;
-import exception.WebSearcherException;
 import reader.Protocol;
 import reader.UrlReader;
 import utils.logger.ApplicationLogger;
@@ -30,9 +29,6 @@ public class Controller {
         ThreadPool.getInstance().add(() -> {
             try {
                 Map<String, String> pageContents = getLoadedContents(url, Protocol.HTTP);
-                if(pageContents.get(url).contains("301 Moved Permanently")) {
-                    throw new WebSearcherException(pageContents.get(url));
-                }
                 loadedPage(url, pageContents.get(url));
 
             } catch (Exception e) {

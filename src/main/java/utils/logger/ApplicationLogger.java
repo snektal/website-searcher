@@ -55,39 +55,7 @@ public class ApplicationLogger {
     }
 
     private static Level getLevelFromConfig() {
-        Level level;
         String levelConfig = ApplicationConfig.getStringProperty("logger.level", "INFO");
-        switch (levelConfig) {
-            case "OFF":
-                level = Level.OFF;
-                break;
-            case "SEVERE":
-                level = Level.SEVERE;
-                break;
-            case "FINE":
-                level = Level.FINE;
-                break;
-            case "FINER":
-                level = Level.FINER;
-                break;
-            case "FINEST":
-                level = Level.FINEST;
-                break;
-            case "WARNING":
-                level = Level.WARNING;
-                break;
-            case "INFO":
-                level = Level.INFO;
-                break;
-            case "CONFIG":
-                level = Level.CONFIG;
-                break;
-            case "ALL":
-                level = Level.ALL;
-                break;
-            default:
-                level = Level.INFO;
-        }
-        return level;
+        return Level.parse(levelConfig);
     }
 }
