@@ -32,6 +32,8 @@ public class WebContentsSearcher {
         ReportWriter.generateReport(timestamp, pageContentSearcherCallback);
 
         ApplicationLogger.log(Level.INFO, "app.WebContentsSearcher is Completed");
+
+        System.exit(0);
     }
 
     private static List<String> getWebsiteUrls() {
