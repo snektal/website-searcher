@@ -1,7 +1,9 @@
 import org.junit.runner.RunWith;
-import org.junit.extensions.cpsuite.ClasspathSuite;
+import org.junit.runners.Suite;
+import reader.UrlReaderTest;
+import utils.config.ApplicationConfigTest;
 
-@RunWith(ClasspathSuite.class)
-@ClasspathSuite.IncludeJars(true)
+@RunWith(Suite.class)
+@Suite.SuiteClasses({ ApplicationConfigTest.class, UrlReaderTest.class })
 public class RunAllTests {
 }
