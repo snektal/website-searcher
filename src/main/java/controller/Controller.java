@@ -36,7 +36,7 @@ public class Controller {
                 loadedPage(url, pageContents.get(url));
 
             } catch (Exception e) {
-                ApplicationLogger.log(Level.FINE, "Re-submitting failed task {0}", url);
+                ApplicationLogger.log(Level.FINE, "Failed task to load page {0}", url);
                 couldNotLoadPage(url, e);
             }
         });

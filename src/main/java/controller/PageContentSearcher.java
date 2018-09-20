@@ -40,9 +40,10 @@ public class PageContentSearcher implements Callback {
     }
 
     private void parseForSearchTerms(String url, String pageContext) {
+        String pageContextToLower = pageContext.toLowerCase();
         long matchCount = searchTerms.stream()
                 .map(String::toLowerCase)
-                .filter(pageContext.toLowerCase()::contains)
+                .filter(pageContextToLower::contains)
                 .count();
 
         results.putIfAbsent(url, String.valueOf(matchCount > 0));
