@@ -1,0 +1,185 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: UrlReader</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">reader</a> ]
+</div>
+
+<h1>Coverage Summary for Class: UrlReader (reader)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">UrlReader</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    95.5%
+  </span>
+  <span class="absValue">
+    (42/ 44)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package reader;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import exception.WebSearcherException;
+<i>4</i>&nbsp;import http.HttpConnectionManager;
+<i>5</i>&nbsp;import utils.logger.ApplicationLogger;
+<i>6</i>&nbsp;
+<i>7</i>&nbsp;import java.io.BufferedReader;
+<i>8</i>&nbsp;import java.io.IOException;
+<i>9</i>&nbsp;import java.io.InputStreamReader;
+<i>10</i>&nbsp;import java.net.HttpURLConnection;
+<i>11</i>&nbsp;import java.nio.charset.StandardCharsets;
+<i>12</i>&nbsp;import java.text.MessageFormat;
+<i>13</i>&nbsp;import java.util.Arrays;
+<i>14</i>&nbsp;import java.util.HashMap;
+<i>15</i>&nbsp;import java.util.List;
+<i>16</i>&nbsp;import java.util.Map;
+<i>17</i>&nbsp;import java.util.Objects;
+<i>18</i>&nbsp;import java.util.logging.Level;
+<i>19</i>&nbsp;import java.util.regex.Matcher;
+<i>20</i>&nbsp;import java.util.regex.Pattern;
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;import static java.util.stream.Collectors.joining;
+<i>23</i>&nbsp;import static java.util.stream.Collectors.toList;
+<i>24</i>&nbsp;
+<b class="fc"><i>25</i>&nbsp;public class UrlReader {</b>
+<b class="fc"><i>26</i>&nbsp;    private static Pattern pattern = Pattern.compile(&quot;&lt;script(.*)&gt;(.*)&lt;/script&gt;&quot;);</b>
+<i>27</i>&nbsp;    private static final String COMMA = &quot;,&quot;;
+<i>28</i>&nbsp;    private static final String QUOTE = &quot;\&quot;&quot;;
+<i>29</i>&nbsp;    private static final String EMPTY_STRING = &quot;&quot;;
+<i>30</i>&nbsp;    private static final String SPACE = &quot; &quot;;
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;    public Map&lt;String, String&gt; readPage(String link, Protocol protocol)  {
+<b class="fc"><i>33</i>&nbsp;        Map&lt;String, String&gt; linkContents = new HashMap&lt;&gt;();</b>
+<b class="fc"><i>34</i>&nbsp;        StringBuilder contents = new StringBuilder();</b>
+<i>35</i>&nbsp;        try {
+<b class="fc"><i>36</i>&nbsp;            HttpURLConnection conn = HttpConnectionManager.create(link, protocol);</b>
+<b class="fc"><i>37</i>&nbsp;            if (conn != null) {</b>
+<b class="fc"><i>38</i>&nbsp;                try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {</b>
+<b class="fc"><i>39</i>&nbsp;                    contents.append(reader.lines().collect(joining(SPACE)));</b>
+<b class="fc"><i>40</i>&nbsp;                }</b>
+<i>41</i>&nbsp;
+<b class="fc"><i>42</i>&nbsp;                ApplicationLogger.log(Level.FINE, &quot;Execute successfully {0}&quot;, link);</b>
+<i>43</i>&nbsp;            }
+<i>44</i>&nbsp;
+<b class="fc"><i>45</i>&nbsp;            linkContents.put(link, stripTags(contents.toString()));</b>
+<i>46</i>&nbsp;
+<b class="fc"><i>47</i>&nbsp;        } catch (IOException e) {</b>
+<b class="fc"><i>48</i>&nbsp;            String msg = MessageFormat.format(&quot;Failed to execute - {0}. Exception -&gt; {1}&quot;, link, e);</b>
+<b class="fc"><i>49</i>&nbsp;            ApplicationLogger.log(Level.SEVERE, msg);</b>
+<i>50</i>&nbsp;
+<b class="fc"><i>51</i>&nbsp;            linkContents.put(link, msg);</b>
+<b class="fc"><i>52</i>&nbsp;            throw new WebSearcherException (msg);</b>
+<b class="fc"><i>53</i>&nbsp;        }</b>
+<b class="fc"><i>54</i>&nbsp;        return linkContents;</b>
+<i>55</i>&nbsp;    }
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    public List&lt;String&gt; getUrls(String url) {
+<b class="fc"><i>58</i>&nbsp;        Protocol protocol = Protocol.IGNORE;</b>
+<b class="fc"><i>59</i>&nbsp;        String contents = read(url, protocol);</b>
+<i>60</i>&nbsp;
+<b class="fc"><i>61</i>&nbsp;        return Arrays.stream(contents.split(System.getProperty(&quot;line.separator&quot;)))</b>
+<b class="fc"><i>62</i>&nbsp;                .filter(Objects::nonNull)</b>
+<b class="fc"><i>63</i>&nbsp;                .skip(1)</b>
+<b class="fc"><i>64</i>&nbsp;                .map(l -&gt; l.split(COMMA)[1].replaceAll(QUOTE, EMPTY_STRING))</b>
+<b class="fc"><i>65</i>&nbsp;                .collect(toList());</b>
+<i>66</i>&nbsp;    }
+<i>67</i>&nbsp;
+<i>68</i>&nbsp;    private String stripTags(String contents) {
+<b class="fc"><i>69</i>&nbsp;        String contentStripped = removeScriptContent(contents);</b>
+<b class="fc"><i>70</i>&nbsp;        return contentStripped.replaceAll(&quot;\\&lt;.*?&gt;&quot;, EMPTY_STRING);</b>
+<i>71</i>&nbsp;    }
+<i>72</i>&nbsp;
+<i>73</i>&nbsp;    private String removeScriptContent(String contents) {
+<b class="fc"><i>74</i>&nbsp;        if(!contents.isEmpty()) {</b>
+<b class="fc"><i>75</i>&nbsp;            Matcher matcher = pattern.matcher(contents);</b>
+<b class="fc"><i>76</i>&nbsp;            while (matcher.find()) {</b>
+<b class="fc"><i>77</i>&nbsp;                contents = contents.replace(matcher.group(1), EMPTY_STRING);</b>
+<i>78</i>&nbsp;            }
+<b class="fc"><i>79</i>&nbsp;            return contents;</b>
+<i>80</i>&nbsp;        }
+<b class="fc"><i>81</i>&nbsp;        return contents;</b>
+<i>82</i>&nbsp;    }
+<i>83</i>&nbsp;
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;
+<i>86</i>&nbsp;    private String read(String link, Protocol protocol) {
+<b class="fc"><i>87</i>&nbsp;        StringBuilder contents = new StringBuilder();</b>
+<i>88</i>&nbsp;        try {
+<b class="fc"><i>89</i>&nbsp;            HttpURLConnection conn = HttpConnectionManager.create(link, protocol);</b>
+<b class="fc"><i>90</i>&nbsp;            if (conn != null) {</b>
+<b class="fc"><i>91</i>&nbsp;                try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {</b>
+<b class="fc"><i>92</i>&nbsp;                    contents.append(reader.lines().collect(joining(System.getProperty(&quot;line.separator&quot;))));</b>
+<b class="fc"><i>93</i>&nbsp;                }</b>
+<b class="fc"><i>94</i>&nbsp;                ApplicationLogger.log(Level.FINE, &quot;Execute successfully {0}&quot;, link);</b>
+<i>95</i>&nbsp;            }
+<b class="nc"><i>96</i>&nbsp;        } catch (IOException e) {</b>
+<b class="nc"><i>97</i>&nbsp;            ApplicationLogger.log(Level.SEVERE, &quot;Failed to execute - {0}. Exception -&gt; {1}&quot;, link, e);</b>
+<b class="fc"><i>98</i>&nbsp;        }</b>
+<b class="fc"><i>99</i>&nbsp;        return contents.toString();</b>
+<i>100</i>&nbsp;    }
+<i>101</i>&nbsp;
+<i>102</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2018-09-19 18:50</div>
+</div>
+</body>
+</html>

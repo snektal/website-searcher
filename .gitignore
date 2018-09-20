@@ -1,0 +1,31 @@
+# Compiled source #
+###################
+*.class
+
+# Logs and databases #
+######################
+*.log
+*.sqlite
+
+# OS generated files #
+######################
+.DS_Store*
+ehthumbs.db
+Icon?
+Thumbs.db
+
+# IntelliJ #
+############
+*.iml
+*.ipr
+*.iws
+.idea
+**/target/*
+
+# Other IDE's#
+##############
+\.classpath
+\.project
+\.settings
+
+

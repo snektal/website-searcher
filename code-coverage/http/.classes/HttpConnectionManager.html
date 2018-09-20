@@ -1,0 +1,223 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: HttpConnectionManager</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">http</a> ]
+</div>
+
+<h1>Coverage Summary for Class: HttpConnectionManager (http)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">HttpConnectionManager</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (3/ 6)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    41.7%
+  </span>
+  <span class="absValue">
+    (15/ 36)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">HttpConnectionManager$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">HttpConnectionManager$2</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    44.4%
+  </span>
+  <span class="absValue">
+    (4/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    41%
+  </span>
+  <span class="absValue">
+    (16/ 39)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package http;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import reader.Protocol;
+<i>4</i>&nbsp;import utils.logger.ApplicationLogger;
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;import javax.net.ssl.HttpsURLConnection;
+<i>7</i>&nbsp;import javax.net.ssl.SSLContext;
+<i>8</i>&nbsp;import javax.net.ssl.TrustManager;
+<i>9</i>&nbsp;import javax.net.ssl.X509TrustManager;
+<i>10</i>&nbsp;import java.io.IOException;
+<i>11</i>&nbsp;import java.net.HttpURLConnection;
+<i>12</i>&nbsp;import java.net.URL;
+<i>13</i>&nbsp;import java.security.cert.X509Certificate;
+<i>14</i>&nbsp;import java.util.logging.Level;
+<i>15</i>&nbsp;import java.util.logging.Logger;
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;public class HttpConnectionManager {
+<b class="fc"><i>18</i>&nbsp;    private static final Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);</b>
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;    static {
+<b class="fc"><i>21</i>&nbsp;        System.setProperty(&quot;http.agent&quot;, &quot;Chrome&quot;);</b>
+<b class="fc"><i>22</i>&nbsp;    }</b>
+<i>23</i>&nbsp;
+<b class="nc"><i>24</i>&nbsp;    private HttpConnectionManager() {</b>
+<b class="nc"><i>25</i>&nbsp;    }</b>
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;    public static HttpURLConnection create(String link, Protocol protocol) {
+<b class="fc"><i>28</i>&nbsp;        HttpURLConnection conn = null;</b>
+<i>29</i>&nbsp;        try {
+<b class="fc"><i>30</i>&nbsp;            switch (protocol) {</b>
+<i>31</i>&nbsp;                case HTTPS:
+<b class="nc"><i>32</i>&nbsp;                    conn = createSecureConnection(&quot;https://www.&quot; + link);</b>
+<b class="nc"><i>33</i>&nbsp;                    break;</b>
+<i>34</i>&nbsp;                case HTTP:
+<b class="fc"><i>35</i>&nbsp;                    conn = createConnection(&quot;http://www.&quot; + link);</b>
+<b class="fc"><i>36</i>&nbsp;                    break;</b>
+<i>37</i>&nbsp;                case IGNORE:
+<b class="fc"><i>38</i>&nbsp;                    conn = createConnection(link);</b>
+<i>39</i>&nbsp;                    break;
+<i>40</i>&nbsp;            }
+<b class="nc"><i>41</i>&nbsp;        } catch (IOException e) {</b>
+<b class="nc"><i>42</i>&nbsp;            ApplicationLogger.log(Level.SEVERE, &quot;Failure to create a URLConnection -&gt; {0}&quot;, e);</b>
+<b class="fc"><i>43</i>&nbsp;        }</b>
+<b class="fc"><i>44</i>&nbsp;        return conn;</b>
+<i>45</i>&nbsp;    }
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    private static HttpURLConnection createConnection(String link) throws IOException {
+<b class="fc"><i>48</i>&nbsp;        URL url = new URL(link);</b>
+<b class="fc"><i>49</i>&nbsp;        HttpURLConnection conn = (HttpURLConnection) url.openConnection();</b>
+<b class="fc"><i>50</i>&nbsp;        conn.addRequestProperty(&quot;User-Agent&quot;, &quot;Mozilla/4.0 (compatible; MSIE 9.0; Windows NT 5.1)&quot;);</b>
+<b class="fc"><i>51</i>&nbsp;        conn.setConnectTimeout(15000);</b>
+<i>52</i>&nbsp;
+<b class="fc"><i>53</i>&nbsp;        return conn;</b>
+<i>54</i>&nbsp;
+<i>55</i>&nbsp;    }
+<i>56</i>&nbsp;
+<i>57</i>&nbsp;    private static HttpURLConnection createSecureConnection(String link) {
+<b class="nc"><i>58</i>&nbsp;        HttpURLConnection conn = null;</b>
+<i>59</i>&nbsp;        try {
+<b class="nc"><i>60</i>&nbsp;            TrustManager[] trustAllCerts = new TrustManager[]{</b>
+<b class="nc"><i>61</i>&nbsp;                    new X509TrustManager() {</b>
+<i>62</i>&nbsp;                        public X509Certificate[] getAcceptedIssuers() {
+<b class="nc"><i>63</i>&nbsp;                            return new X509Certificate[]{};</b>
+<i>64</i>&nbsp;                        }
+<i>65</i>&nbsp;
+<i>66</i>&nbsp;                        public void checkClientTrusted(X509Certificate[] certs, String authType) {
+<i>67</i>&nbsp;                            // no implementation
+<i>68</i>&nbsp;                        }
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;                        public void checkServerTrusted(X509Certificate[] certs, String authType) {
+<i>71</i>&nbsp;                            // no implementation
+<i>72</i>&nbsp;                        }
+<i>73</i>&nbsp;                    }
+<i>74</i>&nbsp;            };
+<b class="nc"><i>75</i>&nbsp;            activateTrustManager(trustAllCerts);</b>
+<b class="nc"><i>76</i>&nbsp;            conn = createConnection(link);</b>
+<i>77</i>&nbsp;
+<b class="nc"><i>78</i>&nbsp;        } catch (IOException e) {</b>
+<b class="nc"><i>79</i>&nbsp;            LOGGER.log(Level.SEVERE, &quot;Failed to create connection for HTTPS &quot; + link + &quot;, Exception: &quot; + e);</b>
+<b class="nc"><i>80</i>&nbsp;        }</b>
+<b class="nc"><i>81</i>&nbsp;        return conn;</b>
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;    }
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;    private static void activateTrustManager(TrustManager[] trustAllCerts) {
+<i>86</i>&nbsp;        try {
+<b class="nc"><i>87</i>&nbsp;            SSLContext sc = SSLContext.getInstance(&quot;SSL&quot;);</b>
+<b class="nc"><i>88</i>&nbsp;            sc.init(null, trustAllCerts, new java.security.SecureRandom());</b>
+<b class="nc"><i>89</i>&nbsp;            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());</b>
+<b class="nc"><i>90</i>&nbsp;        } catch (Exception e) {</b>
+<b class="nc"><i>91</i>&nbsp;            LOGGER.log(Level.SEVERE, &quot;Failed to activate TrustManager , Exception: &quot; + e);</b>
+<b class="nc"><i>92</i>&nbsp;        }</b>
+<b class="nc"><i>93</i>&nbsp;    }</b>
+<i>94</i>&nbsp;
+<i>95</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2018-09-19 18:50</div>
+</div>
+</body>
+</html>
