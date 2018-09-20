@@ -53,12 +53,14 @@ Execute batch scripts
 ```
 build
 ```
-EX: build.bat <Full path to JDK distribution location on PC>
+EX: build [Full path to JDK distribution location on PC]
 ### Commands to run application
 ```
 run
 ```     
-EX: run.bat <Full path to JDK distribution location on PC>
+EX: run [Full path to JDK distribution location on PC]
+
+**Note: If [Full path to JDK distribution location on PC] contains spaces wrap path in double quotes
 
 # IV. App configuration
 All parameters used in app.WebContentsSearcher configured in the 
